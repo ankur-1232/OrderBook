@@ -1,0 +1,5 @@
+body { font-family: monospace; max-width: 600px; margin: 2rem auto; }
+.order-form label { margin-right: 1rem; }
+table { border-collapse: collapse; margin-top: 1rem; }
+td, th { padding: 4px 12px; border: 1px solid #ccc; }
+th { background: #f4f4f4; }   
