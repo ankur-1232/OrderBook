@@ -1,40 +1,64 @@
-const el = id => document.getElementById(id);
+let nextId = 1;
 
-el("place").addEventListener("click", async () => {
-    const body = {
-        side:  el("side").value,
-        price: parseFloat(el("price").value),
-        size:  parseFloat(el("size").value),
+document.getElementById("place").addEventListener("click", async () => {
+    const order = {
+        id:       parseInt(document.getElementById("id").value),
+        type:     document.getElementById("type").value,
+        side:     document.getElementById("side").value,
+        price:    parseFloat(document.getElementById("price").value),
+        quantity: parseInt(document.getElementById("quantity").value)
     };
-    const res = await fetch("/order", {
+
+    await fetch("/order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
+        body: JSON.stringify(order)
     });
-    const data = await res.json();
-    console.log(data);
-    refresh();
+
+    nextId++;
+    document.getElementById("id").value = nextId;
+    fetchBook();
 });
 
-async function refresh() {
+async function fetchBook() {
     const res  = await fetch("/orderbook");
-    const book = await res.json();
+    const data = await res.json();
 
-    const rows = Math.max(book.bids.length, book.asks.length);
-    const tbody = el("bids");
+    const bids = data.bids || [];
+    const asks = data.asks || [];
+    const rows = Math.max(bids.length, asks.length);
+
+    const tbody = document.getElementById("book-body");
     tbody.innerHTML = "";
 
     for (let i = 0; i < rows; i++) {
         const tr = document.createElement("tr");
-        const bid = book.bids[i];
-        const ask = book.asks[i];
-        tr.innerHTML = `
-            <td>${bid ? bid.price : ""}</td>
-            <td>${bid ? bid.size  : ""}</td>
-            <td>${ask ? ask.price : ""}</td>
-            <td>${ask ? ask.size  : ""}</td>`;
+
+        // Bid side
+        if (bids[i]) {
+            tr.innerHTML += `<td>${bids[i].price}</td>
+                             <td>${bids[i].quantity}</td>
+                             <td>${bids[i].type}</td>`;
+        } else {
+            tr.innerHTML += `<td></td><td></td><td></td>`;
+        }
+
+        // Spacer
+        tr.innerHTML += `<td></td>`;
+
+        // Ask side
+        if (asks[i]) {
+            tr.innerHTML += `<td>${asks[i].price}</td>
+                             <td>${asks[i].quantity}</td>
+                             <td>${asks[i].type}</td>`;
+        } else {
+            tr.innerHTML += `<td></td><td></td><td></td>`;
+        }
+
         tbody.appendChild(tr);
     }
 }
 
-refresh();   
+// Poll every 2s
+fetchBook();
+setInterval(fetchBook, 2000);   

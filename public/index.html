@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Order Book</title>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -10,30 +11,53 @@
 
     <!-- Place order form -->
     <div class="order-form">
-        <label>Side
-            <select id="side">
-                <option value="buy">Buy</option>
-                <option value="sell">Sell</option>
-            </select>
-        </label>
-        <label>Price <input type="number" id="price" step="0.01" value="100"></label>
-        <label>Size  <input type="number" id="size"  step="0.0001" value="1"></label>
-        <button id="place">Place Order</button>
+        <div class="form-row">
+            <label>ID
+                <input type="number" id="id" value="1" min="1">
+            </label>
+            <label>Type
+                <select id="type">
+                    <option value="limit">Limit</option>
+                    <option value="market">Market</option>
+                    <option value="stop">Stop</option>
+                    <option value="gtc">GTC</option>
+                    <option value="fok_limit">FOK Limit</option>
+                </select>
+            </label>
+            <label>Side
+                <select id="side">
+                    <option value="buy">Buy</option>
+                    <option value="sell">Sell</option>
+                </select>
+            </label>
+            <label>Price
+                <input type="number" id="price" step="0.01" value="100.00">
+            </label>
+            <label>Qty
+                <input type="number" id="quantity" step="1" value="1" min="1">
+            </label>
+            <button id="place">Place Order</button>
+        </div>
     </div>
+
+    <!-- Spread indicator -->
+    <div class="spread" id="spread">Spread: —</div>
 
     <!-- Book display -->
     <div class="book">
         <table>
             <thead>
-                    <tr>
-                        <th>Bid</th>
-                        <th>Size</th>
-                        <th>Ask</th>
-                        <th>Size</th>
-                    </tr>
+                <tr>
+                    <th class="bid-col">Price</th>
+                    <th class="bid-col">Qty</th>
+                    <th class="bid-col">Type</th>
+                    <th class="mid-col"></th>
+                    <th class="ask-col">Type</th>
+                    <th class="ask-col">Qty</th>
+                    <th class="ask-col">Price</th>
+                </tr>
             </thead>
-
-            <tbody id="bids"></tbody>
+            <tbody id="book-body"></tbody>
         </table>
     </div>
 
